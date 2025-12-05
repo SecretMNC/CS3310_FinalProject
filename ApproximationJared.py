@@ -1,10 +1,28 @@
 import time
+import difficult_datasets as dd
+
+
+def handle_data(index_graph):
+    # Create new empty matrix with same size as sorted_graph
+    n = len(index_graph)//2
+    new_matrix = [[0]*n for _ in range(n)]
+    for i in range(n):
+        for j in range(2):
+            if j == 0:
+                row = index_graph[i][j]
+            elif j == 1:
+                col = index_graph[i][j]
+        new_matrix[row][col] = 1
+        new_matrix[col][row] = 1
+    return new_matrix
+
 
 
 def sort_graph(graph):
     sorted_graph = sorted(graph, key=lambda x: sum(x), reverse=True)
     print("Sorted graph by number of trues in each row:")
     # Move all the trues to the left of the matrix so it form a triangle
+    
     n = len(sorted_graph)
     for i in range(n):
         true_count = sum(sorted_graph[i])
@@ -51,25 +69,26 @@ def swap_trues(matrix, index, bottom_row):
 
 def bipartite(graph):
     num_bq = 0
-    
+    # Handle the data to get binary matrix
+    readable_graph = handle_data(graph)
     while True:
         # Find how many trues are in each row
-        counts = [sum(row) for row in graph]
+        counts = [sum(row) for row in readable_graph]
         print("Counts of trues in each row:", counts)
 
         # Sort the matrix by largest trues to least trues
-        sorted_graph = sort_graph(graph)
-
+        readable_graph = sort_graph(readable_graph)
         # Find the largest square sub-matrix of trues
-        index, row, size = find_largest_square_submatrix(sorted_graph)
+        index, row, size = find_largest_square_submatrix(readable_graph)
         if size <= 1:
+            num_bq += 1
             print("No more square sub-matrix of size > 1 found. Exiting.")
             break
         num_bq += 1
         # Change the trues to false in the sub-matrix
-        sorted_graph = swap_trues(sorted_graph, index, row)
+        readable_graph = swap_trues(readable_graph, index, row)
         print("Modified matrix after swapping trues to false in the sub-matrix:")
-        for row in sorted_graph:
+        for row in readable_graph:
             print(row)
     return num_bq
 
@@ -81,10 +100,10 @@ if __name__ == "__main__":
         [0, 0, 1, 0, 1],
         [1, 1, 0, 1, 1]
     ]
+    graph8 = dd.difficult_graphs["Crown_S8"]
 
-    
     start_time = time.time()
-    num_bq = bipartite(graph)
+    num_bq = bipartite(graph8)
     print(f"Number of bipartite subgraphs found: {num_bq}")
     end_time = time.time()
 

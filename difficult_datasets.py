@@ -13,7 +13,7 @@ def generate_crown_graph(n):
     for u in range(n):
         for v in range(n):
             if u != v:
-                edges.append((u, v + n))
+                edges.append([u, v + n])
     return edges
 
 
