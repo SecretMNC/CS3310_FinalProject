@@ -12,8 +12,9 @@ def handle_data(index_graph):
                 row = index_graph[i][j]
             elif j == 1:
                 col = index_graph[i][j]
-        new_matrix[row][col] = 1
-        new_matrix[col][row] = 1
+        if col != row:
+            new_matrix[row][col] = 1
+            new_matrix[col][row] = 1
     return new_matrix
 
 
@@ -25,8 +26,9 @@ def sort_graph(graph):
     
     n = len(sorted_graph)
     for i in range(n):
+        m = len(sorted_graph[i])
         true_count = sum(sorted_graph[i])
-        for j in range(n):
+        for j in range(m):
             if j < true_count:
                 sorted_graph[i][j] = 1
             else:
@@ -42,7 +44,7 @@ def find_largest_square_submatrix(matrix):
     last_true_indexes = []
     for i in range(n):
         last_index = -1
-        for j in range(n - 1, -1, -1):  # Search from right to left
+        for j in range(len(matrix[i]) - 1, -1, -1):  # Search from right to left
             if matrix[i][j] == 1:
                 last_index = j
                 break
@@ -69,8 +71,11 @@ def swap_trues(matrix, index, bottom_row):
 
 def bipartite(graph):
     num_bq = 0
-    # Handle the data to get binary matrix
-    readable_graph = handle_data(graph)
+    if format:
+        # Handle the data to get binary matrix
+        readable_graph = handle_data(graph)
+    else:
+        readable_graph = graph
     while True:
         # Find how many trues are in each row
         counts = [sum(row) for row in readable_graph]
@@ -93,17 +98,33 @@ def bipartite(graph):
     return num_bq
 
 if __name__ == "__main__":
+
+    format = False
     graph = [
-        [0, 1, 0, 1, 1],
+        [0, 1, 1, 1, 1],
+        [1, 0, 0, 1, 0],
+        [1, 0, 1, 1, 0],
         [1, 1, 1, 0, 1],
-        [1, 1, 1, 0, 0],
-        [0, 0, 1, 0, 1],
-        [1, 1, 0, 1, 1]
+        [1, 0, 0, 1, 0]
     ]
-    graph8 = dd.difficult_graphs["Crown_S8"]
+
+    booleanMatrix16 = [
+    [ 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
+    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1 ],
+    [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1 ],
+    ]
+    graph8 = dd.difficult_graphs["Crown_S10"]
 
     start_time = time.time()
-    num_bq = bipartite(graph8)
+    num_bq = bipartite(graph)
     print(f"Number of bipartite subgraphs found: {num_bq}")
     end_time = time.time()
 
