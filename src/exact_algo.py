@@ -7,6 +7,7 @@ from collections import defaultdict
 import time
 from toy_datasets import graphs, expected_k
 from difficult_datasets import difficult_graphs
+from test_graphs import TEST_DATA
 
 try:
     from pysat.solvers import Minisat22
@@ -15,14 +16,16 @@ except ImportError:
     print("Please install it running: pip install python-sat")
     sys.exit(1)
 
+print_all = False
 
 class BicliqueCoverSolver:
+
     def __init__(self, edges: list[tuple[int, int]]):
         """
         Initialize with a list of edges (u, v).
         Assumes U vertices are the first element, V vertices are the second.
         """
-        self.original_edges = set(edges)
+        self.original_edges = set(tuple(e) for e in edges)
 
         # Extract unique U and V sets
         self.u_nodes = sorted(list(set(u_ for u_, v_ in edges)))
@@ -42,7 +45,7 @@ class BicliqueCoverSolver:
 
     def twin_reduction(self):
         """
-        Phase 1: Kernelization
+        Phase 1: Kernelization.
         Iteratively merges 'True Twins' until the graph is stable.
         True Twins are vertices in the same partition with identical neighbors.
         """
@@ -91,7 +94,7 @@ class BicliqueCoverSolver:
 
         return curr_u, curr_v
 
-    def solve(self, max_k=8):
+    def solve(self, max_k=9):
         """
         Main Loop: Tries k=1, k=2... up to max_k.
         """
@@ -110,8 +113,9 @@ class BicliqueCoverSolver:
         for k in range(1, max_k + 1):
             # If kernel size > 2^k, it's impossible
             if len(k_u) > 2 ** k or len(k_v) > 2 ** k:
-                print(f"k={k}: Impossible (Kernel size exceeds 2^k fingerprint limit)")
-                continue
+                if print_all:
+                    print(f"k={k}: Impossible (Kernel size exceeds 2^k fingerprint limit)")
+                    continue
             if print_all:
                 print(f"Checking k={k} using SAT...", end=" ")
             if self._check_k_sat(k, k_u, k_v):
@@ -126,7 +130,7 @@ class BicliqueCoverSolver:
 
     def _check_k_sat(self, k, active_u, active_v):
         """
-        Phase 2 & 3: Encoding and Solving
+        Phase 2 & 3: Encoding and Solving.
         Translates the Kernel factorization into CNF and solves.
         """
         encode_start = time.perf_counter()
@@ -193,19 +197,19 @@ def run_test(graph_name, test_num, actual_k ='?'):
     """
     if print_all:
         print(f"Test #{test_num}: {graph_name = } (Expected k={actual_k})")
-    exact_solver = BicliqueCoverSolver(difficult_graphs[graph_name])
+    exact_solver = BicliqueCoverSolver(TEST_DATA[graph_name])
     if print_all:
         print(f"Calculated Bipartite Dimension: {exact_solver.solve()}\n")
 
 def main():
     # Uses toy datasets for testing accuracy of the exact FPT algorithm
     all_runtimes = []
-    for idx, graph in enumerate(difficult_graphs):
+    for idx, graph in enumerate(TEST_DATA):
         runtimes = []
         print("=================================================\n")
         for iteration in range(1, 6):
             total_runtime_start = time.perf_counter()
-            run_test(graph, expected_k[idx], iteration)
+            run_test(graph, expected_k[idx])
             total_runtime_end = time.perf_counter()
             runtimes.append(total_runtime_end - total_runtime_start)
             print(f"Total runtime for test #{iteration}:")
@@ -217,7 +221,7 @@ def main():
         all_runtimes.append(sum(runtimes) / 5)
 
     print("All average runtimes in order of input:")
-    for idx, graph in enumerate(difficult_graphs):
+    for idx, graph in enumerate(TEST_DATA):
         print(f"{graph} avg time: {all_runtimes[idx]:.8f}")
 
 
@@ -239,7 +243,3 @@ def import_main(dataset):
 if __name__ == "__main__":
     print_all = True
     main()
-else:
-    print_all = False
-    dataset_file = input("Type in exact filename:\n")
-    import_main(dataset_file)

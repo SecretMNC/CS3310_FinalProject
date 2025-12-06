@@ -1,6 +1,6 @@
 
 from typing import Set, Dict, Iterator, Optional, Literal, Type
-from src.graph import Graph
+from graph import Graph
 
 
 

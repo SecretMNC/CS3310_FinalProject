@@ -89,5 +89,5 @@ difficult_graphs = {
 }
 
 if __name__ == "__main__":
-    for name, edges in DIFFICULT_GRAPHS.items():
+    for name, edges in difficult_graphs.items():
         print(f"Dataset '{name}': {len(edges)} edges")

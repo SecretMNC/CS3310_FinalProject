@@ -1,6 +1,7 @@
 import time
 import difficult_datasets as dd
 
+format = False
 
 def handle_data(index_graph):
     # Create new empty matrix with same size as sorted_graph
@@ -21,7 +22,7 @@ def handle_data(index_graph):
 
 def sort_graph(graph):
     sorted_graph = sorted(graph, key=lambda x: sum(x), reverse=True)
-    print("Sorted graph by number of trues in each row:")
+    #print("Sorted graph by number of trues in each row:")
     # Move all the trues to the left of the matrix so it form a triangle
     
     n = len(sorted_graph)
@@ -33,9 +34,9 @@ def sort_graph(graph):
                 sorted_graph[i][j] = 1
             else:
                 sorted_graph[i][j] = 0
-    print("Triangular form of the graph:")
-    for row in sorted_graph:
-        print(row)
+    #print("Triangular form of the graph:")
+    #for row in sorted_graph:
+        #print(row)
     return sorted_graph
 
 def find_largest_square_submatrix(matrix):
@@ -49,7 +50,7 @@ def find_largest_square_submatrix(matrix):
                 last_index = j
                 break
         last_true_indexes.append(last_index+1) # Make 1 larger for math reasons
-    print("Indexes of last true in each row:", last_true_indexes)
+    #print("Indexes of last true in each row:", last_true_indexes)
     large_size = 0
     size = -1
     index = -1
@@ -59,7 +60,7 @@ def find_largest_square_submatrix(matrix):
         if size > large_size:
             large_size = size
             index = i
-    print(f"Largest square sub-matrix size: {large_size} at row index: {index}")
+    #print(f"Largest square sub-matrix size: {large_size} at row index: {index}")
     return index, indexes[index], large_size
 
 def swap_trues(matrix, index, bottom_row):
@@ -79,7 +80,7 @@ def bipartite(graph):
     while True:
         # Find how many trues are in each row
         counts = [sum(row) for row in readable_graph]
-        print("Counts of trues in each row:", counts)
+        #print("Counts of trues in each row:", counts)
 
         # Sort the matrix by largest trues to least trues
         readable_graph = sort_graph(readable_graph)
@@ -87,14 +88,14 @@ def bipartite(graph):
         index, row, size = find_largest_square_submatrix(readable_graph)
         if size <= 1:
             num_bq += 1
-            print("No more square sub-matrix of size > 1 found. Exiting.")
+            #print("No more square sub-matrix of size > 1 found. Exiting.")
             break
         num_bq += 1
         # Change the trues to false in the sub-matrix
         readable_graph = swap_trues(readable_graph, index, row)
-        print("Modified matrix after swapping trues to false in the sub-matrix:")
-        for row in readable_graph:
-            print(row)
+        #print("Modified matrix after swapping trues to false in the sub-matrix:")
+        #for row in readable_graph:
+            #print(row)
     return num_bq
 
 if __name__ == "__main__":

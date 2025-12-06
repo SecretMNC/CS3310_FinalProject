@@ -1,7 +1,7 @@
 
 from typing import Generator, Optional
-from src.graph import Graph
-from src.bipartite import CompleteBipartiteGraph
+from graph import Graph
+from bipartite import CompleteBipartiteGraph
 import random
 from math import isqrt
 
@@ -49,3 +49,38 @@ def approx_biclique_cover(G: Graph, k: Optional[int] = None) -> Generator[Comple
 
 def approx_biclique_cover_number(G : Graph, k : Optional[int] = None) -> int:
     return sum(1 for _ in approx_biclique_cover(G, k))
+
+
+def dataset_to_graph_object(edges_list):
+    """
+    Converts a list of tuples [(u, v), ...] into a Graph object.
+    """
+    G = Graph()
+
+    # 1. Collect all unique vertices first
+    all_vertices = set()
+    for u, v in edges_list:
+        all_vertices.add(u)
+        all_vertices.add(v)
+
+    # 2. Add vertices to Graph
+    # We unpack the set into arguments
+    G.add_vertex(*all_vertices)
+
+    # 3. Add Edges
+    for u, v in edges_list:
+        # Create the specific Edge object required by the class
+        edge_obj = Graph.Edge(u, v)
+        G.add_edge(edge_obj)
+
+    return G
+
+if __name__ == "__main__":
+    crown_edges = [(0, 3), (0, 4), (1, 3), (1, 5), (2, 4), (2, 5)]
+
+    # Convert it
+    my_graph = dataset_to_graph_object(crown_edges)
+
+    # Run the heuristic
+    cover_count = approx_biclique_cover_number(my_graph)
+    print(f"Approximated K: {cover_count}")
