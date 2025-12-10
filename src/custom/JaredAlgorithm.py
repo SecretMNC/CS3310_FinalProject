@@ -1,4 +1,4 @@
-#import ../difficult_datasets as dd
+#import difficult_datasets as dd
 
 def recursive_search(list_of_edges):
     """
@@ -106,7 +106,7 @@ def recursive_search(list_of_edges):
 
 
 if __name__ == "__main__":
-
+    #import difficult_datasets as dd
     graph = dd.difficult_graphs["Crown_S11"]
     
     # Call recursive_search to find biclique cover
