@@ -3,6 +3,11 @@ from itertools import combinations
 from math import inf
 
 class BicliqueGenerator:
+    """
+    Takes in graph edge data in the form of list[list[u,v]]
+    Formats edge data into two adjacency dictionaries
+    Finds maximal bicliques and returns them as bitmasks.
+    """
     def __init__(self, edges):
         self.edges = edges
         self.adj_u = defaultdict(set)
@@ -76,6 +81,11 @@ class BicliqueGenerator:
 
 
 class BicliqueCoverSolver:
+    """
+    Takes in edge data and makes a generator object, finding all max bicliques
+    Uses bitmasking and bitwise operations to find where a biclique is needed for covering
+    Returns the exact Bipartite dimension.
+    """
     def __init__(self, edges):
         # Instantiates helper class to get the bitmasks
         generator = BicliqueGenerator(edges)
@@ -86,6 +96,15 @@ class BicliqueCoverSolver:
         self.memo = {}
 
     def solve(self, mask=0):
+        """
+        This is where the Dynamic Programming happens.
+        Takes in a mask which is whatever the current state of edge covering is.
+        The bitmask is a series of 1's and 0's,
+        1 = covered at that index
+        0 = uncovered at that index
+        The algorithm runs until all bits are 1 (covered, base case)
+        Returns the minimum biclique cover number for the graph of edges.
+        """
         # Check Memo
         if mask in self.memo:
             return self.memo[mask]
