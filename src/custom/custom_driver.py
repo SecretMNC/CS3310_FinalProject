@@ -3,6 +3,8 @@ import statistics
 
 import JaredAlgorithm
 import kevin_DP_algo
+from graph import Graph
+from approx_biclique_cover import approx_biclique_cover_number
 
 import test_graphs as dd
 """
@@ -26,7 +28,7 @@ def edges_to_matrix(edges):
 
     return matrix
 """
-"""
+
 def edges_to_graph_obj(edges):
     
     # Converts list of tuples to Tate's Graph object.
@@ -46,7 +48,7 @@ def edges_to_graph_obj(edges):
     for u, v in edges:
         G.add_edge(Graph.Edge(u, v))
     return G
-"""
+
 
 # Wrappers
 
@@ -65,9 +67,9 @@ def run_tate(edges):
     Wrapper for Tate's Custom Algorithm.
     """
     # 1. Convert Data to Graph Object
-    #G = edges_to_graph_obj(edges)
+    G = edges_to_graph_obj(edges)
     # 2. Run Algorithm
-    return #approx_biclique_cover.approx_biclique_cover_number(G)
+    return approx_biclique_cover_number(G)
 
 
 def run_jared(edges):
@@ -82,7 +84,7 @@ def main():
     # Driver code
     algorithms = {
         "Kevin (Custom, DP)": run_kevin,
-        #"Tate (Custom)": run_tate,
+        "Tate (Custom)": run_tate,
         "Jared (Custom)": run_jared
     }
 
